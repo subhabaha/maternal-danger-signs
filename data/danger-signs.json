@@ -1,0 +1,679 @@
+{
+  "version": "0.1.0",
+  "levels": {
+    "emergency": "Go to a facility with emergency obstetric care now (call 108 or 102).",
+    "same_day": "Needs assessment by a doctor or at a facility today.",
+    "routine": "Act on it at this visit and follow up."
+  },
+  "sources": {
+    "MCP": "Ministry of Health and Family Welfare, Government of India. Mother and Child Protection Card (danger signs during pregnancy and after delivery).",
+    "PCPNC": "World Health Organization. Pregnancy, Childbirth, Postpartum and Newborn Care: a guide for essential practice (3rd edition, 2015) - rapid assessment and management.",
+    "WHO-PE": "World Health Organization. Recommendations for prevention and treatment of pre-eclampsia and eclampsia (2011) and WHO recommendations on antenatal care (2016).",
+    "NICE-NG133": "NICE guideline NG133. Hypertension in pregnancy: diagnosis and management (2019, updated 2023).",
+    "NICE-NG126": "NICE guideline NG126. Ectopic pregnancy and miscarriage: diagnosis and initial management (2019, updated 2023).",
+    "WHO-HB": "World Health Organization. Haemoglobin concentrations for the diagnosis of anaemia and assessment of severity (2011; guideline update 2024). Anaemia Mukt Bharat operational guidelines, MoHFW (2018).",
+    "RCOG-GTG57": "RCOG Green-top Guideline 57. Reduced fetal movements (2011).",
+    "RCOG-GTG69": "RCOG Green-top Guideline 69. Nausea and vomiting of pregnancy and hyperemesis gravidarum (2016, updated 2024).",
+    "RCOG-GTG37": "RCOG Green-top Guidelines 37a/37b. Venous thromboembolism in pregnancy and the puerperium (2015).",
+    "TELE-MANAS": "Tele-MANAS, the national tele-mental-health helpline, Government of India: 14416 or 1-800-891-4416."
+  },
+  "rules": [
+    {
+      "id": "convulsions",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "convulsions"
+        ]
+      },
+      "label": "Convulsions (fits): possible eclampsia",
+      "label_hi": "दौरे (झटके): एक्लेम्पसिया हो सकता है",
+      "action": "Emergency. Keep her on her left side, do not leave her alone, and take her to a facility with emergency obstetric care now.",
+      "action_hi": "आपातकाल। उन्हें बाईं करवट लिटाएँ, अकेला न छोड़ें और तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल ले जाएँ।",
+      "sources": [
+        "MCP",
+        "PCPNC",
+        "WHO-PE"
+      ]
+    },
+    {
+      "id": "bleeding_in_pregnancy",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "vaginal_bleeding"
+        ]
+      },
+      "label": "Bleeding from the vagina during pregnancy",
+      "label_hi": "गर्भावस्था में योनि से खून आना",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "possible_ectopic",
+      "level": "emergency",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "max_weeks": 12
+          },
+          {
+            "symptoms_any": [
+              "missed_period"
+            ]
+          }
+        ],
+        "symptoms_any": [
+          "severe_abdominal_pain",
+          "fainting",
+          "shoulder_tip_pain"
+        ]
+      },
+      "label": "Early pregnancy or missed period with severe pain or fainting: possible ectopic pregnancy",
+      "label_hi": "शुरुआती गर्भावस्था या माहवारी रुकने के साथ तेज दर्द या बेहोशी: अस्थानिक (एक्टोपिक) गर्भावस्था हो सकती है",
+      "action": "Emergency. Refer now to a facility that can operate; do not wait for a scan at the clinic.",
+      "action_hi": "आपातकाल। तुरंत ऑपरेशन की सुविधा वाले अस्पताल भेजें; क्लिनिक पर स्कैन का इंतजार न करें।",
+      "sources": [
+        "NICE-NG126",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "early_pregnancy_pain",
+      "level": "same_day",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "max_weeks": 12
+          },
+          {
+            "symptoms_any": [
+              "missed_period"
+            ]
+          }
+        ],
+        "symptoms_any": [
+          "lower_abdominal_pain"
+        ]
+      },
+      "label": "Early pregnancy or missed period with lower abdominal pain",
+      "label_hi": "शुरुआती गर्भावस्था या माहवारी रुकने के साथ पेट के निचले हिस्से में दर्द",
+      "action": "Needs an early-pregnancy assessment today (pregnancy test and ultrasound) to rule out ectopic pregnancy.",
+      "action_hi": "आज ही जांच ज़रूरी है (प्रेगनेंसी टेस्ट और अल्ट्रासाउंड), ताकि एक्टोपिक गर्भावस्था न छूटे।",
+      "sources": [
+        "NICE-NG126"
+      ]
+    },
+    {
+      "id": "severe_hypertension",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "vitals_any": {
+          "systolic_gte": 160,
+          "diastolic_gte": 110
+        }
+      },
+      "label": "Severe high blood pressure (160/110 or above)",
+      "label_hi": "बहुत ज़्यादा ब्लड प्रेशर (160/110 या उससे अधिक)",
+      "action": "Emergency. Refer now; severe hypertension in pregnancy or after delivery needs urgent treatment.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें; गर्भावस्था या प्रसव के बाद बहुत ज़्यादा बीपी का तुरंत इलाज ज़रूरी है।",
+      "sources": [
+        "WHO-PE",
+        "NICE-NG133"
+      ]
+    },
+    {
+      "id": "preeclampsia_with_symptoms",
+      "level": "emergency",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "min_weeks": 20
+          },
+          {
+            "stage": [
+              "postpartum"
+            ],
+            "max_days_postpartum": 42
+          }
+        ],
+        "vitals_any": {
+          "systolic_gte": 140,
+          "diastolic_gte": 90
+        },
+        "symptoms_any": [
+          "severe_headache",
+          "blurred_vision",
+          "epigastric_pain"
+        ]
+      },
+      "label": "High blood pressure with headache, blurred vision or upper-abdominal pain: possible pre-eclampsia with severe features",
+      "label_hi": "हाई बीपी के साथ सिरदर्द, धुंधला दिखना या पेट के ऊपरी हिस्से में दर्द: गंभीर प्री-एक्लेम्पसिया हो सकता है",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "WHO-PE",
+        "NICE-NG133",
+        "MCP"
+      ]
+    },
+    {
+      "id": "hypertension_after_20_weeks",
+      "level": "same_day",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "min_weeks": 20
+          },
+          {
+            "stage": [
+              "postpartum"
+            ],
+            "max_days_postpartum": 42
+          }
+        ],
+        "vitals_any": {
+          "systolic_gte": 140,
+          "diastolic_gte": 90
+        }
+      },
+      "label": "Blood pressure 140/90 or above after 20 weeks or after delivery",
+      "label_hi": "20 हफ्ते के बाद या प्रसव के बाद बीपी 140/90 या उससे अधिक",
+      "action": "Assess today for pre-eclampsia: repeat BP, test urine for protein and ask about headache, vision and upper-abdominal pain.",
+      "action_hi": "आज ही प्री-एक्लेम्पसिया की जांच करें: बीपी दोबारा नापें, पेशाब में प्रोटीन जांचें, सिरदर्द, नज़र और पेट के ऊपरी दर्द के बारे में पूछें।",
+      "sources": [
+        "NICE-NG133",
+        "WHO-PE"
+      ]
+    },
+    {
+      "id": "headache_with_blurred_vision",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_all": [
+          "severe_headache",
+          "blurred_vision"
+        ]
+      },
+      "label": "Severe headache with blurred vision",
+      "label_hi": "तेज सिरदर्द के साथ धुंधला दिखना",
+      "action": "Emergency. Check BP and refer now.",
+      "action_hi": "आपातकाल। बीपी नापें और तुरंत रेफर करें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "severe_abdominal_pain",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "severe_abdominal_pain"
+        ]
+      },
+      "label": "Severe abdominal pain",
+      "label_hi": "पेट में तेज दर्द",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "breathing_difficulty",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fast_or_difficult_breathing"
+            ]
+          },
+          {
+            "vitals_any": {
+              "respiratory_rate_gte": 30
+            }
+          }
+        ]
+      },
+      "label": "Fast or difficult breathing",
+      "label_hi": "तेज़ या कठिनाई से सांस लेना",
+      "action": "Emergency. Refer now.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "chest_pain",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "chest_pain"
+        ]
+      },
+      "label": "Chest pain in pregnancy or after delivery: rule out a blood clot in the lungs",
+      "label_hi": "गर्भावस्था या प्रसव के बाद सीने में दर्द: फेफड़ों में खून का थक्का होने की आशंका",
+      "action": "Emergency. Refer now.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें।",
+      "sources": [
+        "RCOG-GTG37",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "fever_too_weak",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ],
+        "symptoms_any": [
+          "too_weak_to_get_up"
+        ]
+      },
+      "label": "Fever and too weak to get out of bed",
+      "label_hi": "बुखार और इतनी कमज़ोरी कि बिस्तर से उठ न सकें",
+      "action": "Emergency. Refer now.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "postpartum_sepsis",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ],
+        "symptoms_any": [
+          "foul_discharge",
+          "lower_abdominal_pain",
+          "severe_abdominal_pain"
+        ]
+      },
+      "label": "Fever after delivery with foul-smelling discharge or abdominal pain: possible infection of the womb",
+      "label_hi": "प्रसव के बाद बुखार के साथ बदबूदार स्राव या पेट दर्द: बच्चेदानी में संक्रमण हो सकता है",
+      "action": "Emergency. Refer now; this can become sepsis quickly.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें; यह जल्दी गंभीर संक्रमण (सेप्सिस) बन सकता है।",
+      "sources": [
+        "PCPNC",
+        "MCP"
+      ]
+    },
+    {
+      "id": "fever",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ]
+      },
+      "label": "Fever (38 °C or above) in pregnancy or after delivery",
+      "label_hi": "गर्भावस्था या प्रसव के बाद बुखार (38 °C या अधिक)",
+      "action": "Needs a doctor's assessment today to find the cause.",
+      "action_hi": "आज ही डॉक्टर से जांच कराएँ ताकि कारण पता चले।",
+      "sources": [
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "postpartum_haemorrhage",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "heavy_bleeding"
+        ]
+      },
+      "label": "Heavy bleeding after delivery",
+      "label_hi": "प्रसव के बाद बहुत ज़्यादा खून आना",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "postpartum_bleeding_check",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "vaginal_bleeding"
+        ]
+      },
+      "label": "Bleeding after delivery: check how heavy it is",
+      "label_hi": "प्रसव के बाद खून आना: देखें कि कितना ज़्यादा है",
+      "action": "Some bleeding is normal after delivery. Treat as an emergency if a pad is soaked within an hour, there are large clots, or she feels dizzy or faint; otherwise have it checked today.",
+      "action_hi": "प्रसव के बाद थोड़ा खून आना सामान्य है। अगर एक घंटे में पैड भीग जाए, बड़े थक्के आएँ, या चक्कर/बेहोशी लगे तो यह आपातकाल है; वरना आज ही जांच कराएँ।",
+      "sources": [
+        "PCPNC",
+        "MCP"
+      ]
+    },
+    {
+      "id": "foul_discharge",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "foul_discharge"
+        ]
+      },
+      "label": "Foul-smelling discharge after delivery",
+      "label_hi": "प्रसव के बाद बदबूदार स्राव",
+      "action": "Needs a doctor's assessment today for infection.",
+      "action_hi": "संक्रमण की जांच के लिए आज ही डॉक्टर को दिखाएँ।",
+      "sources": [
+        "PCPNC",
+        "MCP"
+      ]
+    },
+    {
+      "id": "leaking_fluid",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "leaking_fluid"
+        ]
+      },
+      "label": "Watery fluid leaking from the vagina",
+      "label_hi": "योनि से पानी जैसा तरल रिसना",
+      "action": "Go to a facility with obstetric care now.",
+      "action_hi": "तुरंत प्रसूति सुविधा वाले अस्पताल जाएँ।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "reduced_fetal_movements",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "min_weeks": 28,
+        "symptoms_any": [
+          "reduced_fetal_movements"
+        ]
+      },
+      "label": "Baby moving less than usual (28 weeks or more)",
+      "label_hi": "बच्चे की हलचल सामान्य से कम (28 हफ्ते या अधिक)",
+      "action": "Same day, without waiting: check the fetal heart at a facility today.",
+      "action_hi": "बिना इंतजार किए आज ही अस्पताल में बच्चे की धड़कन जंचवाएँ।",
+      "sources": [
+        "RCOG-GTG57",
+        "MCP"
+      ]
+    },
+    {
+      "id": "swelling_face_hands",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "swelling_face_hands"
+        ]
+      },
+      "label": "Swelling of the face or hands",
+      "label_hi": "चेहरे या हाथों में सूजन",
+      "action": "Check BP and urine protein today.",
+      "action_hi": "आज ही बीपी और पेशाब में प्रोटीन की जांच करें।",
+      "sources": [
+        "MCP"
+      ]
+    },
+    {
+      "id": "calf_pain_swelling",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "calf_pain_swelling"
+        ]
+      },
+      "label": "Pain or swelling in one calf: possible blood clot (DVT)",
+      "label_hi": "एक पिंडली में दर्द या सूजन: खून का थक्का (DVT) हो सकता है",
+      "action": "Needs assessment today; refer now if there is chest pain or breathlessness.",
+      "action_hi": "आज ही जांच ज़रूरी है; सीने में दर्द या सांस फूलने पर तुरंत रेफर करें।",
+      "sources": [
+        "RCOG-GTG37"
+      ]
+    },
+    {
+      "id": "severe_anaemia",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "vitals_any": {
+          "haemoglobin_g_dl_lt": 7
+        }
+      },
+      "label": "Severe anaemia (haemoglobin below 7 g/dL)",
+      "label_hi": "गंभीर खून की कमी (हीमोग्लोबिन 7 g/dL से कम)",
+      "action": "Refer today to a First Referral Unit or district hospital for management of severe anaemia.",
+      "action_hi": "गंभीर एनीमिया के इलाज के लिए आज ही FRU या जिला अस्पताल भेजें।",
+      "sources": [
+        "WHO-HB"
+      ]
+    },
+    {
+      "id": "moderate_anaemia",
+      "level": "routine",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "vitals_all": {
+          "haemoglobin_g_dl_gte": 7,
+          "haemoglobin_g_dl_lt": 10
+        }
+      },
+      "label": "Moderate anaemia in pregnancy (haemoglobin 7.0-9.9 g/dL)",
+      "label_hi": "गर्भावस्था में मध्यम एनीमिया (हीमोग्लोबिन 7.0-9.9 g/dL)",
+      "action": "Treat as per the national anaemia protocol (Anaemia Mukt Bharat) and recheck haemoglobin.",
+      "action_hi": "राष्ट्रीय एनीमिया प्रोटोकॉल (एनीमिया मुक्त भारत) के अनुसार इलाज करें और हीमोग्लोबिन दोबारा जांचें।",
+      "sources": [
+        "WHO-HB"
+      ]
+    },
+    {
+      "id": "mild_anaemia",
+      "level": "routine",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "vitals_all": {
+          "haemoglobin_g_dl_gte": 10,
+          "haemoglobin_g_dl_lt": 11
+        }
+      },
+      "label": "Mild anaemia in pregnancy (haemoglobin 10.0-10.9 g/dL)",
+      "label_hi": "गर्भावस्था में हल्का एनीमिया (हीमोग्लोबिन 10.0-10.9 g/dL)",
+      "action": "Treat as per the national anaemia protocol (Anaemia Mukt Bharat) and recheck haemoglobin.",
+      "action_hi": "राष्ट्रीय एनीमिया प्रोटोकॉल (एनीमिया मुक्त भारत) के अनुसार इलाज करें और हीमोग्लोबिन दोबारा जांचें।",
+      "sources": [
+        "WHO-HB"
+      ]
+    },
+    {
+      "id": "severe_vomiting",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "severe_vomiting"
+        ]
+      },
+      "label": "Vomiting so much that she cannot keep fluids down",
+      "label_hi": "इतनी उल्टी कि पानी भी न रुके",
+      "action": "Needs assessment today for dehydration (possible hyperemesis gravidarum).",
+      "action_hi": "पानी की कमी की जांच के लिए आज ही डॉक्टर को दिखाएँ (हाइपरएमेसिस हो सकता है)।",
+      "sources": [
+        "RCOG-GTG69"
+      ]
+    },
+    {
+      "id": "urinary_infection_with_fever",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "burning_urination"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever",
+              "flank_pain"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ]
+      },
+      "label": "Burning urination with fever or flank pain: possible kidney infection",
+      "label_hi": "पेशाब में जलन के साथ बुखार या कमर के बगल में दर्द: गुर्दे का संक्रमण हो सकता है",
+      "action": "Needs a doctor's assessment today; kidney infection in pregnancy usually needs admission.",
+      "action_hi": "आज ही डॉक्टर को दिखाएँ; गर्भावस्था में गुर्दे के संक्रमण में अक्सर भर्ती की ज़रूरत होती है।",
+      "sources": [
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "thoughts_of_self_harm",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "thoughts_of_self_harm"
+        ]
+      },
+      "label": "Thoughts of harming herself or the baby",
+      "label_hi": "खुद को या बच्चे को नुकसान पहुँचाने के विचार",
+      "action": "Do not leave her alone. Arrange urgent mental-health care today; Tele-MANAS 14416 is available 24x7.",
+      "action_hi": "उन्हें अकेला न छोड़ें। आज ही मानसिक स्वास्थ्य सहायता दिलाएँ; Tele-MANAS 14416 चौबीसों घंटे उपलब्ध है।",
+      "sources": [
+        "TELE-MANAS",
+        "PCPNC"
+      ]
+    }
+  ]
+}
