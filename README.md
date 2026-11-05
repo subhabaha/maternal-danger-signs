@@ -10,6 +10,8 @@ Status: **v0.1.0 prototype (November 2026).** The rules have been written and un
 
 The leading causes of maternal death in India (haemorrhage, sepsis, hypertensive disorders and obstructed labour), along with severe anaemia, often give warning signs that a health worker can recognise. Those signs are often missed in a rushed visit or never reach a doctor in time. Medicines that harm a fetus, such as ACE inhibitors or valproate, are still prescribed after a pregnancy begins. This library puts the published danger-sign lists and pregnancy medicine cautions into code that any app, SMS bot or clinic system can call. It needs no internet and no AI model.
 
+**Try it in your browser:** https://subhabaha.github.io/maternal-danger-signs/ (runs locally in the page; nothing is sent anywhere).
+
 ## What it checks
 
 | Area | Examples (see `data/danger-signs.json` for all 27 rules) | Level |
@@ -33,6 +35,7 @@ Every rule names its source: the MoHFW Mother and Child Protection Card, WHO PCP
 git clone https://github.com/subhabaha/maternal-danger-signs.git
 cd maternal-danger-signs
 npm test
+npm run build:demo   # rebuilds docs/index.html, the browser demo
 node examples/cli.js '{"stage":"pregnant","gestational_weeks":32,"bp":"150/100","symptoms":["severe_headache"]}'
 node examples/cli.js --text "डिलीवरी के बाद बहुत खून आ रहा है"
 ```

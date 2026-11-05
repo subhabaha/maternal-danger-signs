@@ -3,11 +3,37 @@
   "version": "0.1.0",
   "description": "Deterministic screen for danger signs in pregnancy and after delivery, and for medicines unsafe in pregnancy. English and Hindi. Decision support for community health workers and primary care.",
   "main": "src/index.js",
-  "files": ["src", "data", "README.md", "LICENSE", "NOTICE"],
-  "scripts": { "test": "node --test test/*.test.js", "example": "node examples/cli.js" },
-  "keywords": ["maternal-health", "pregnancy", "danger-signs", "pre-eclampsia", "anaemia", "community-health-workers", "india", "hindi", "decision-support", "femtech"],
+  "files": [
+    "src",
+    "data",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "example": "node examples/cli.js",
+    "build:demo": "node scripts/build-demo.js"
+  },
+  "keywords": [
+    "maternal-health",
+    "pregnancy",
+    "danger-signs",
+    "pre-eclampsia",
+    "anaemia",
+    "community-health-workers",
+    "india",
+    "hindi",
+    "decision-support",
+    "femtech"
+  ],
   "author": "InstaDataHelp AI Services Private Limited",
   "license": "Apache-2.0",
-  "engines": { "node": ">=18" },
-  "repository": { "type": "git", "url": "https://github.com/subhabaha/maternal-danger-signs.git" }
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/subhabaha/maternal-danger-signs.git"
+  }
 }

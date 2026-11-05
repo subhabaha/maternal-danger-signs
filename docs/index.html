@@ -1,0 +1,1062 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>maternal-danger-signs · demo</title>
+<style>
+:root{--ink:#14213d;--muted:#5b6475;--line:#d9dee7;--bg:#f6f8fb;--em:#b42318;--emb:#fef3f2;--sd:#b54708;--sdb:#fffaeb;--rt:#175cd3;--rtb:#eff8ff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Devanagari",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px 20px}header h1{margin:0;font-size:20px}header p{margin:4px 0 0;color:var(--muted);font-size:14px}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;padding:18px 20px;max-width:1200px;margin:0 auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+h2{font-size:15px;margin:0 0 10px}label{font-size:13px;color:var(--muted);display:block;margin-bottom:3px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.row>div{flex:1;min-width:110px}
+input[type=number],input[type=text],select,textarea{width:100%;padding:8px 9px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px}
+textarea{min-height:70px}.sym{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13.5px}.sym label{color:var(--ink);display:flex;gap:6px;align-items:flex-start;margin:0}
+.sym small{color:var(--muted);display:block}.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.go{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;margin-top:6px}
+.lvl{border-radius:10px;padding:12px 14px;font-weight:700;margin-bottom:10px}.emergency{background:var(--emb);color:var(--em);border:1px solid #fecdca}.same_day{background:var(--sdb);color:var(--sd);border:1px solid #fedf89}.routine{background:var(--rtb);color:var(--rt);border:1px solid #b2ddff}.none{background:#f2f4f7;color:var(--muted);border:1px solid var(--line)}
+.alert{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}.alert b{display:block}.alert .act{margin:4px 0}.alert .src{font-size:12px;color:var(--muted)}
+.pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:999px;margin-right:6px}
+.disc{font-size:12.5px;color:var(--muted);margin-top:12px}footer{text-align:center;color:var(--muted);font-size:12.5px;padding:10px 20px 24px}a{color:#175cd3}
+</style></head><body>
+<header><h1>maternal-danger-signs <span style="font-weight:400;color:#5b6475">· demo</span></h1>
+<p>Danger signs in pregnancy and after delivery, and medicines unsafe in pregnancy. English and Hindi. Runs entirely in your browser; nothing is sent anywhere. <b>Decision support only.</b></p></header>
+<main>
+<section class="card">
+  <div class="tabs"><button id="t-form" class="on" type="button">Checklist</button><button id="t-text" type="button">Free text (English / हिंदी)</button></div>
+  <div id="p-form">
+    <div class="row"><div><label>Stage</label><select id="stage"><option value="pregnant">Pregnant · गर्भवती</option><option value="postpartum">After delivery · प्रसव के बाद</option></select></div>
+      <div><label id="wlab">Weeks of pregnancy</label><input id="weeks" type="number" min="0" max="45" placeholder="e.g. 32"></div></div>
+    <div class="row"><div><label>BP systolic</label><input id="sys" type="number" placeholder="e.g. 150"></div><div><label>BP diastolic</label><input id="dia" type="number" placeholder="e.g. 100"></div>
+      <div><label>Haemoglobin g/dL</label><input id="hb" type="number" step="0.1" placeholder="e.g. 9.1"></div></div>
+    <div class="row"><div><label>Temperature °C</label><input id="temp" type="number" step="0.1" placeholder="e.g. 37.0"></div><div><label>Breaths per minute</label><input id="rr" type="number" placeholder="e.g. 18"></div></div>
+    <h2>Symptoms · लक्षण</h2><div class="sym" id="sym"></div>
+    <div class="row" style="margin-top:12px"><div><label>Medicines (comma-separated, generic names)</label><input id="meds" type="text" placeholder="e.g. telmisartan 40 mg, ibuprofen 400 mg"></div></div>
+  </div>
+  <div id="p-text" style="display:none">
+    <label>What does the woman report? (English, Hindi, or Hindi in English letters)</label>
+    <textarea id="free">Main 8 mahine ki garbhvati hoon, tez sir dard aur sab dhundhla dikh raha hai</textarea>
+    <div class="row" style="margin-top:8px"><div><label>BP (optional)</label><input id="fbp" type="text" placeholder="e.g. 156/104"></div><div><label>Weeks (optional)</label><input id="fweeks" type="number"></div></div>
+  </div>
+  <button class="go" id="go" type="button">Check</button>
+</section>
+<section class="card"><div class="tabs"><button id="l-en" class="on" type="button">English</button><button id="l-hi" type="button">हिंदी</button></div><div id="out"><p style="color:#5b6475">Fill in the checklist or type what the woman says, then press <b>Check</b>.</p></div></section>
+</main>
+<footer>Open source (Apache-2.0) · <a href="https://github.com/subhabaha/maternal-danger-signs">github.com/subhabaha/maternal-danger-signs</a> · by InstaDataHelp AI Services Pvt. Ltd., Jaipur · version 0.1.0</footer>
+<script>
+window.__DANGER = {
+  "version": "0.1.0",
+  "levels": {
+    "emergency": "Go to a facility with emergency obstetric care now (call 108 or 102).",
+    "same_day": "Needs assessment by a doctor or at a facility today.",
+    "routine": "Act on it at this visit and follow up."
+  },
+  "sources": {
+    "MCP": "Ministry of Health and Family Welfare, Government of India. Mother and Child Protection Card (danger signs during pregnancy and after delivery).",
+    "PCPNC": "World Health Organization. Pregnancy, Childbirth, Postpartum and Newborn Care: a guide for essential practice (3rd edition, 2015) - rapid assessment and management.",
+    "WHO-PE": "World Health Organization. Recommendations for prevention and treatment of pre-eclampsia and eclampsia (2011) and WHO recommendations on antenatal care (2016).",
+    "NICE-NG133": "NICE guideline NG133. Hypertension in pregnancy: diagnosis and management (2019, updated 2023).",
+    "NICE-NG126": "NICE guideline NG126. Ectopic pregnancy and miscarriage: diagnosis and initial management (2019, updated 2023).",
+    "WHO-HB": "World Health Organization. Haemoglobin concentrations for the diagnosis of anaemia and assessment of severity (2011; guideline update 2024). Anaemia Mukt Bharat operational guidelines, MoHFW (2018).",
+    "RCOG-GTG57": "RCOG Green-top Guideline 57. Reduced fetal movements (2011).",
+    "RCOG-GTG69": "RCOG Green-top Guideline 69. Nausea and vomiting of pregnancy and hyperemesis gravidarum (2016, updated 2024).",
+    "RCOG-GTG37": "RCOG Green-top Guidelines 37a/37b. Venous thromboembolism in pregnancy and the puerperium (2015).",
+    "TELE-MANAS": "Tele-MANAS, the national tele-mental-health helpline, Government of India: 14416 or 1-800-891-4416."
+  },
+  "rules": [
+    {
+      "id": "convulsions",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "convulsions"
+        ]
+      },
+      "label": "Convulsions (fits): possible eclampsia",
+      "label_hi": "दौरे (झटके): एक्लेम्पसिया हो सकता है",
+      "action": "Emergency. Keep her on her left side, do not leave her alone, and take her to a facility with emergency obstetric care now.",
+      "action_hi": "आपातकाल। उन्हें बाईं करवट लिटाएँ, अकेला न छोड़ें और तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल ले जाएँ।",
+      "sources": [
+        "MCP",
+        "PCPNC",
+        "WHO-PE"
+      ]
+    },
+    {
+      "id": "bleeding_in_pregnancy",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "vaginal_bleeding"
+        ]
+      },
+      "label": "Bleeding from the vagina during pregnancy",
+      "label_hi": "गर्भावस्था में योनि से खून आना",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "possible_ectopic",
+      "level": "emergency",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "max_weeks": 12
+          },
+          {
+            "symptoms_any": [
+              "missed_period"
+            ]
+          }
+        ],
+        "symptoms_any": [
+          "severe_abdominal_pain",
+          "fainting",
+          "shoulder_tip_pain"
+        ]
+      },
+      "label": "Early pregnancy or missed period with severe pain or fainting: possible ectopic pregnancy",
+      "label_hi": "शुरुआती गर्भावस्था या माहवारी रुकने के साथ तेज दर्द या बेहोशी: अस्थानिक (एक्टोपिक) गर्भावस्था हो सकती है",
+      "action": "Emergency. Refer now to a facility that can operate; do not wait for a scan at the clinic.",
+      "action_hi": "आपातकाल। तुरंत ऑपरेशन की सुविधा वाले अस्पताल भेजें; क्लिनिक पर स्कैन का इंतजार न करें।",
+      "sources": [
+        "NICE-NG126",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "early_pregnancy_pain",
+      "level": "same_day",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "max_weeks": 12
+          },
+          {
+            "symptoms_any": [
+              "missed_period"
+            ]
+          }
+        ],
+        "symptoms_any": [
+          "lower_abdominal_pain"
+        ]
+      },
+      "label": "Early pregnancy or missed period with lower abdominal pain",
+      "label_hi": "शुरुआती गर्भावस्था या माहवारी रुकने के साथ पेट के निचले हिस्से में दर्द",
+      "action": "Needs an early-pregnancy assessment today (pregnancy test and ultrasound) to rule out ectopic pregnancy.",
+      "action_hi": "आज ही जांच ज़रूरी है (प्रेगनेंसी टेस्ट और अल्ट्रासाउंड), ताकि एक्टोपिक गर्भावस्था न छूटे।",
+      "sources": [
+        "NICE-NG126"
+      ]
+    },
+    {
+      "id": "severe_hypertension",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "vitals_any": {
+          "systolic_gte": 160,
+          "diastolic_gte": 110
+        }
+      },
+      "label": "Severe high blood pressure (160/110 or above)",
+      "label_hi": "बहुत ज़्यादा ब्लड प्रेशर (160/110 या उससे अधिक)",
+      "action": "Emergency. Refer now; severe hypertension in pregnancy or after delivery needs urgent treatment.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें; गर्भावस्था या प्रसव के बाद बहुत ज़्यादा बीपी का तुरंत इलाज ज़रूरी है।",
+      "sources": [
+        "WHO-PE",
+        "NICE-NG133"
+      ]
+    },
+    {
+      "id": "preeclampsia_with_symptoms",
+      "level": "emergency",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "min_weeks": 20
+          },
+          {
+            "stage": [
+              "postpartum"
+            ],
+            "max_days_postpartum": 42
+          }
+        ],
+        "vitals_any": {
+          "systolic_gte": 140,
+          "diastolic_gte": 90
+        },
+        "symptoms_any": [
+          "severe_headache",
+          "blurred_vision",
+          "epigastric_pain"
+        ]
+      },
+      "label": "High blood pressure with headache, blurred vision or upper-abdominal pain: possible pre-eclampsia with severe features",
+      "label_hi": "हाई बीपी के साथ सिरदर्द, धुंधला दिखना या पेट के ऊपरी हिस्से में दर्द: गंभीर प्री-एक्लेम्पसिया हो सकता है",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "WHO-PE",
+        "NICE-NG133",
+        "MCP"
+      ]
+    },
+    {
+      "id": "hypertension_after_20_weeks",
+      "level": "same_day",
+      "when": {
+        "any_of": [
+          {
+            "stage": [
+              "pregnant"
+            ],
+            "min_weeks": 20
+          },
+          {
+            "stage": [
+              "postpartum"
+            ],
+            "max_days_postpartum": 42
+          }
+        ],
+        "vitals_any": {
+          "systolic_gte": 140,
+          "diastolic_gte": 90
+        }
+      },
+      "label": "Blood pressure 140/90 or above after 20 weeks or after delivery",
+      "label_hi": "20 हफ्ते के बाद या प्रसव के बाद बीपी 140/90 या उससे अधिक",
+      "action": "Assess today for pre-eclampsia: repeat BP, test urine for protein and ask about headache, vision and upper-abdominal pain.",
+      "action_hi": "आज ही प्री-एक्लेम्पसिया की जांच करें: बीपी दोबारा नापें, पेशाब में प्रोटीन जांचें, सिरदर्द, नज़र और पेट के ऊपरी दर्द के बारे में पूछें।",
+      "sources": [
+        "NICE-NG133",
+        "WHO-PE"
+      ]
+    },
+    {
+      "id": "headache_with_blurred_vision",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_all": [
+          "severe_headache",
+          "blurred_vision"
+        ]
+      },
+      "label": "Severe headache with blurred vision",
+      "label_hi": "तेज सिरदर्द के साथ धुंधला दिखना",
+      "action": "Emergency. Check BP and refer now.",
+      "action_hi": "आपातकाल। बीपी नापें और तुरंत रेफर करें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "severe_abdominal_pain",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "severe_abdominal_pain"
+        ]
+      },
+      "label": "Severe abdominal pain",
+      "label_hi": "पेट में तेज दर्द",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "breathing_difficulty",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fast_or_difficult_breathing"
+            ]
+          },
+          {
+            "vitals_any": {
+              "respiratory_rate_gte": 30
+            }
+          }
+        ]
+      },
+      "label": "Fast or difficult breathing",
+      "label_hi": "तेज़ या कठिनाई से सांस लेना",
+      "action": "Emergency. Refer now.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "chest_pain",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "chest_pain"
+        ]
+      },
+      "label": "Chest pain in pregnancy or after delivery: rule out a blood clot in the lungs",
+      "label_hi": "गर्भावस्था या प्रसव के बाद सीने में दर्द: फेफड़ों में खून का थक्का होने की आशंका",
+      "action": "Emergency. Refer now.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें।",
+      "sources": [
+        "RCOG-GTG37",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "fever_too_weak",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ],
+        "symptoms_any": [
+          "too_weak_to_get_up"
+        ]
+      },
+      "label": "Fever and too weak to get out of bed",
+      "label_hi": "बुखार और इतनी कमज़ोरी कि बिस्तर से उठ न सकें",
+      "action": "Emergency. Refer now.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "postpartum_sepsis",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ],
+        "symptoms_any": [
+          "foul_discharge",
+          "lower_abdominal_pain",
+          "severe_abdominal_pain"
+        ]
+      },
+      "label": "Fever after delivery with foul-smelling discharge or abdominal pain: possible infection of the womb",
+      "label_hi": "प्रसव के बाद बुखार के साथ बदबूदार स्राव या पेट दर्द: बच्चेदानी में संक्रमण हो सकता है",
+      "action": "Emergency. Refer now; this can become sepsis quickly.",
+      "action_hi": "आपातकाल। तुरंत रेफर करें; यह जल्दी गंभीर संक्रमण (सेप्सिस) बन सकता है।",
+      "sources": [
+        "PCPNC",
+        "MCP"
+      ]
+    },
+    {
+      "id": "fever",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ]
+      },
+      "label": "Fever (38 °C or above) in pregnancy or after delivery",
+      "label_hi": "गर्भावस्था या प्रसव के बाद बुखार (38 °C या अधिक)",
+      "action": "Needs a doctor's assessment today to find the cause.",
+      "action_hi": "आज ही डॉक्टर से जांच कराएँ ताकि कारण पता चले।",
+      "sources": [
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "postpartum_haemorrhage",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "heavy_bleeding"
+        ]
+      },
+      "label": "Heavy bleeding after delivery",
+      "label_hi": "प्रसव के बाद बहुत ज़्यादा खून आना",
+      "action": "Emergency. Refer now to a facility with emergency obstetric care.",
+      "action_hi": "आपातकाल। तुरंत आपातकालीन प्रसूति सुविधा वाले अस्पताल भेजें।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "postpartum_bleeding_check",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "vaginal_bleeding"
+        ]
+      },
+      "label": "Bleeding after delivery: check how heavy it is",
+      "label_hi": "प्रसव के बाद खून आना: देखें कि कितना ज़्यादा है",
+      "action": "Some bleeding is normal after delivery. Treat as an emergency if a pad is soaked within an hour, there are large clots, or she feels dizzy or faint; otherwise have it checked today.",
+      "action_hi": "प्रसव के बाद थोड़ा खून आना सामान्य है। अगर एक घंटे में पैड भीग जाए, बड़े थक्के आएँ, या चक्कर/बेहोशी लगे तो यह आपातकाल है; वरना आज ही जांच कराएँ।",
+      "sources": [
+        "PCPNC",
+        "MCP"
+      ]
+    },
+    {
+      "id": "foul_discharge",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "foul_discharge"
+        ]
+      },
+      "label": "Foul-smelling discharge after delivery",
+      "label_hi": "प्रसव के बाद बदबूदार स्राव",
+      "action": "Needs a doctor's assessment today for infection.",
+      "action_hi": "संक्रमण की जांच के लिए आज ही डॉक्टर को दिखाएँ।",
+      "sources": [
+        "PCPNC",
+        "MCP"
+      ]
+    },
+    {
+      "id": "leaking_fluid",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "leaking_fluid"
+        ]
+      },
+      "label": "Watery fluid leaking from the vagina",
+      "label_hi": "योनि से पानी जैसा तरल रिसना",
+      "action": "Go to a facility with obstetric care now.",
+      "action_hi": "तुरंत प्रसूति सुविधा वाले अस्पताल जाएँ।",
+      "sources": [
+        "MCP",
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "reduced_fetal_movements",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "min_weeks": 28,
+        "symptoms_any": [
+          "reduced_fetal_movements"
+        ]
+      },
+      "label": "Baby moving less than usual (28 weeks or more)",
+      "label_hi": "बच्चे की हलचल सामान्य से कम (28 हफ्ते या अधिक)",
+      "action": "Same day, without waiting: check the fetal heart at a facility today.",
+      "action_hi": "बिना इंतजार किए आज ही अस्पताल में बच्चे की धड़कन जंचवाएँ।",
+      "sources": [
+        "RCOG-GTG57",
+        "MCP"
+      ]
+    },
+    {
+      "id": "swelling_face_hands",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "swelling_face_hands"
+        ]
+      },
+      "label": "Swelling of the face or hands",
+      "label_hi": "चेहरे या हाथों में सूजन",
+      "action": "Check BP and urine protein today.",
+      "action_hi": "आज ही बीपी और पेशाब में प्रोटीन की जांच करें।",
+      "sources": [
+        "MCP"
+      ]
+    },
+    {
+      "id": "calf_pain_swelling",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "calf_pain_swelling"
+        ]
+      },
+      "label": "Pain or swelling in one calf: possible blood clot (DVT)",
+      "label_hi": "एक पिंडली में दर्द या सूजन: खून का थक्का (DVT) हो सकता है",
+      "action": "Needs assessment today; refer now if there is chest pain or breathlessness.",
+      "action_hi": "आज ही जांच ज़रूरी है; सीने में दर्द या सांस फूलने पर तुरंत रेफर करें।",
+      "sources": [
+        "RCOG-GTG37"
+      ]
+    },
+    {
+      "id": "severe_anaemia",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "vitals_any": {
+          "haemoglobin_g_dl_lt": 7
+        }
+      },
+      "label": "Severe anaemia (haemoglobin below 7 g/dL)",
+      "label_hi": "गंभीर खून की कमी (हीमोग्लोबिन 7 g/dL से कम)",
+      "action": "Refer today to a First Referral Unit or district hospital for management of severe anaemia.",
+      "action_hi": "गंभीर एनीमिया के इलाज के लिए आज ही FRU या जिला अस्पताल भेजें।",
+      "sources": [
+        "WHO-HB"
+      ]
+    },
+    {
+      "id": "moderate_anaemia",
+      "level": "routine",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "vitals_all": {
+          "haemoglobin_g_dl_gte": 7,
+          "haemoglobin_g_dl_lt": 10
+        }
+      },
+      "label": "Moderate anaemia in pregnancy (haemoglobin 7.0-9.9 g/dL)",
+      "label_hi": "गर्भावस्था में मध्यम एनीमिया (हीमोग्लोबिन 7.0-9.9 g/dL)",
+      "action": "Treat as per the national anaemia protocol (Anaemia Mukt Bharat) and recheck haemoglobin.",
+      "action_hi": "राष्ट्रीय एनीमिया प्रोटोकॉल (एनीमिया मुक्त भारत) के अनुसार इलाज करें और हीमोग्लोबिन दोबारा जांचें।",
+      "sources": [
+        "WHO-HB"
+      ]
+    },
+    {
+      "id": "mild_anaemia",
+      "level": "routine",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "vitals_all": {
+          "haemoglobin_g_dl_gte": 10,
+          "haemoglobin_g_dl_lt": 11
+        }
+      },
+      "label": "Mild anaemia in pregnancy (haemoglobin 10.0-10.9 g/dL)",
+      "label_hi": "गर्भावस्था में हल्का एनीमिया (हीमोग्लोबिन 10.0-10.9 g/dL)",
+      "action": "Treat as per the national anaemia protocol (Anaemia Mukt Bharat) and recheck haemoglobin.",
+      "action_hi": "राष्ट्रीय एनीमिया प्रोटोकॉल (एनीमिया मुक्त भारत) के अनुसार इलाज करें और हीमोग्लोबिन दोबारा जांचें।",
+      "sources": [
+        "WHO-HB"
+      ]
+    },
+    {
+      "id": "severe_vomiting",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "severe_vomiting"
+        ]
+      },
+      "label": "Vomiting so much that she cannot keep fluids down",
+      "label_hi": "इतनी उल्टी कि पानी भी न रुके",
+      "action": "Needs assessment today for dehydration (possible hyperemesis gravidarum).",
+      "action_hi": "पानी की कमी की जांच के लिए आज ही डॉक्टर को दिखाएँ (हाइपरएमेसिस हो सकता है)।",
+      "sources": [
+        "RCOG-GTG69"
+      ]
+    },
+    {
+      "id": "urinary_infection_with_fever",
+      "level": "same_day",
+      "when": {
+        "stage": [
+          "pregnant"
+        ],
+        "symptoms_any": [
+          "burning_urination"
+        ],
+        "any_of": [
+          {
+            "symptoms_any": [
+              "fever",
+              "flank_pain"
+            ]
+          },
+          {
+            "vitals_any": {
+              "temperature_c_gte": 38
+            }
+          }
+        ]
+      },
+      "label": "Burning urination with fever or flank pain: possible kidney infection",
+      "label_hi": "पेशाब में जलन के साथ बुखार या कमर के बगल में दर्द: गुर्दे का संक्रमण हो सकता है",
+      "action": "Needs a doctor's assessment today; kidney infection in pregnancy usually needs admission.",
+      "action_hi": "आज ही डॉक्टर को दिखाएँ; गर्भावस्था में गुर्दे के संक्रमण में अक्सर भर्ती की ज़रूरत होती है।",
+      "sources": [
+        "PCPNC"
+      ]
+    },
+    {
+      "id": "thoughts_of_self_harm",
+      "level": "emergency",
+      "when": {
+        "stage": [
+          "pregnant",
+          "postpartum"
+        ],
+        "symptoms_any": [
+          "thoughts_of_self_harm"
+        ]
+      },
+      "label": "Thoughts of harming herself or the baby",
+      "label_hi": "खुद को या बच्चे को नुकसान पहुँचाने के विचार",
+      "action": "Do not leave her alone. Arrange urgent mental-health care today; Tele-MANAS 14416 is available 24x7.",
+      "action_hi": "उन्हें अकेला न छोड़ें। आज ही मानसिक स्वास्थ्य सहायता दिलाएँ; Tele-MANAS 14416 चौबीसों घंटे उपलब्ध है।",
+      "sources": [
+        "TELE-MANAS",
+        "PCPNC"
+      ]
+    }
+  ]
+};
+window.__MEDS = {
+  "version": "0.1.0",
+  "levels": {
+    "contraindicated": "Should not be used in pregnancy (or in the stated weeks).",
+    "avoid": "Avoid unless a specialist judges the benefit worth the risk; look for a safer alternative.",
+    "specialist": "Needs specialist review; do not stop abruptly without advice."
+  },
+  "sources": {
+    "LABEL": "Product labelling (CDSCO-approved prescribing information and US FDA labelling, pregnancy sections).",
+    "FDA-NSAID-2020": "US FDA Drug Safety Communication (15 Oct 2020): avoid NSAIDs at 20 weeks of pregnancy or later because of rare fetal kidney problems and low amniotic fluid.",
+    "FDA-STATIN-2021": "US FDA Drug Safety Communication (20 Jul 2021): most patients should stop statins once pregnancy is known.",
+    "MHRA-VALPROATE": "UK MHRA safety measures on valproate (2018, 2024): high risk of birth defects and developmental disorders.",
+    "NICE-NG133": "NICE guideline NG133, Hypertension in pregnancy: stop ACE inhibitors and ARBs when pregnancy is confirmed (ideally within 2 working days).",
+    "WHO-DEWORM-2017": "WHO guideline (2017): preventive deworming in pregnancy after the first trimester.",
+    "ATA-2017": "American Thyroid Association guidelines (2017): in the first trimester propylthiouracil is preferred to methimazole/carbimazole."
+  },
+  "groups": [
+    { "id": "ace_inhibitors", "level": "contraindicated", "names": ["enalapril", "ramipril", "lisinopril", "perindopril", "captopril", "trandolapril", "benazepril", "fosinopril"],
+      "label": "ACE inhibitor", "reason": "Fetal kidney damage, low amniotic fluid and skull defects, mainly in the 2nd and 3rd trimesters.", "sources": ["LABEL", "NICE-NG133"] },
+    { "id": "arbs", "level": "contraindicated", "names": ["losartan", "telmisartan", "olmesartan", "valsartan", "irbesartan", "candesartan", "azilsartan"],
+      "label": "Angiotensin receptor blocker (ARB)", "reason": "Same fetal toxicity as ACE inhibitors.", "sources": ["LABEL", "NICE-NG133"] },
+    { "id": "statins", "level": "avoid", "names": ["atorvastatin", "rosuvastatin", "simvastatin", "pravastatin", "pitavastatin", "fluvastatin", "lovastatin"],
+      "label": "Statin", "reason": "No benefit during pregnancy for most patients; stop once pregnancy is known.", "sources": ["FDA-STATIN-2021", "LABEL"] },
+    { "id": "warfarin", "level": "contraindicated", "names": ["warfarin", "acenocoumarol", "nicoumalone"],
+      "label": "Vitamin K antagonist", "reason": "Embryopathy (especially weeks 6-12) and fetal bleeding. Women with mechanical heart valves need specialist-managed anticoagulation.", "sources": ["LABEL"] },
+    { "id": "doacs", "level": "avoid", "names": ["apixaban", "rivaroxaban", "dabigatran", "edoxaban"],
+      "label": "Direct oral anticoagulant", "reason": "Insufficient safety data; heparins are used in pregnancy instead.", "sources": ["LABEL"] },
+    { "id": "isotretinoin", "level": "contraindicated", "names": ["isotretinoin", "acitretin"],
+      "label": "Oral retinoid", "reason": "Severe birth defects.", "sources": ["LABEL"] },
+    { "id": "topical_retinoids", "level": "avoid", "names": ["tretinoin", "adapalene", "tazarotene"],
+      "label": "Topical retinoid", "reason": "Retinoid exposure is avoided in pregnancy (tazarotene is contraindicated).", "sources": ["LABEL"] },
+    { "id": "valproate", "level": "avoid", "names": ["valproate", "sodium valproate", "valproic acid", "divalproex"],
+      "label": "Valproate", "reason": "High risk of birth defects and developmental disorders. Do not stop abruptly in epilepsy; urgent specialist review.", "sources": ["MHRA-VALPROATE", "LABEL"] },
+    { "id": "other_antiepileptics", "level": "specialist", "names": ["carbamazepine", "phenytoin", "topiramate", "phenobarbitone", "phenobarbital"],
+      "label": "Antiepileptic with teratogenic risk", "reason": "Raised risk of birth defects; benefit usually outweighs risk but needs specialist review. Do not stop abruptly.", "sources": ["LABEL"] },
+    { "id": "methotrexate", "level": "contraindicated", "names": ["methotrexate"],
+      "label": "Methotrexate", "reason": "Causes miscarriage and birth defects.", "sources": ["LABEL"] },
+    { "id": "immunosuppressants", "level": "contraindicated", "names": ["mycophenolate", "mycophenolate mofetil", "mycophenolic acid", "leflunomide"],
+      "label": "Mycophenolate / leflunomide", "reason": "Birth defects and pregnancy loss.", "sources": ["LABEL"] },
+    { "id": "abortifacients", "level": "contraindicated", "names": ["misoprostol", "mifepristone"],
+      "label": "Misoprostol / mifepristone", "reason": "Ends a pregnancy; contraindicated in an ongoing pregnancy unless termination is intended.", "sources": ["LABEL"] },
+    { "id": "ergot_uterotonics", "level": "contraindicated", "names": ["methylergometrine", "methylergonovine", "ergometrine"],
+      "label": "Ergot uterotonic", "reason": "Causes uterine contraction; used only after delivery.", "stage": ["pregnant"], "sources": ["LABEL"] },
+    { "id": "tetracyclines", "level": "avoid", "names": ["doxycycline", "tetracycline", "minocycline", "oxytetracycline"],
+      "label": "Tetracycline", "reason": "Tooth discoloration and bone effects in the fetus, mainly after the first trimester.", "sources": ["LABEL"] },
+    { "id": "fluoroquinolones", "level": "avoid", "names": ["ciprofloxacin", "levofloxacin", "ofloxacin", "norfloxacin", "moxifloxacin"],
+      "label": "Fluoroquinolone", "reason": "Generally avoided in pregnancy when a safer antibiotic is available.", "sources": ["LABEL"] },
+    { "id": "nsaids_after_20_weeks", "level": "avoid", "min_weeks": 20, "names": ["ibuprofen", "diclofenac", "aceclofenac", "naproxen", "mefenamic acid", "ketorolac", "etoricoxib", "celecoxib", "piroxicam", "indomethacin", "nimesulide", "ketoprofen"],
+      "label": "NSAID at 20 weeks or later", "reason": "Fetal kidney problems and low amniotic fluid from 20 weeks; premature closure of the ductus arteriosus in the third trimester. Low-dose aspirin for pre-eclampsia prevention is different and is not flagged.", "sources": ["FDA-NSAID-2020", "LABEL"] },
+    { "id": "antithyroid_first_trimester", "level": "specialist", "max_weeks": 13, "names": ["carbimazole", "methimazole", "thiamazole"],
+      "label": "Carbimazole / methimazole in the first trimester", "reason": "Linked to birth defects in early pregnancy; propylthiouracil is usually preferred in the first trimester.", "sources": ["ATA-2017", "LABEL"] },
+    { "id": "lithium", "level": "specialist", "names": ["lithium", "lithium carbonate"],
+      "label": "Lithium", "reason": "Small risk of cardiac defects and neonatal toxicity; needs specialist review and level monitoring.", "sources": ["LABEL"] },
+    { "id": "amiodarone", "level": "avoid", "names": ["amiodarone"],
+      "label": "Amiodarone", "reason": "Fetal thyroid problems and growth effects.", "sources": ["LABEL"] },
+    { "id": "spironolactone", "level": "avoid", "names": ["spironolactone"],
+      "label": "Spironolactone", "reason": "Anti-androgen effects on a male fetus.", "sources": ["LABEL"] },
+    { "id": "five_alpha_reductase", "level": "contraindicated", "names": ["finasteride", "dutasteride"],
+      "label": "5-alpha-reductase inhibitor", "reason": "Genital defects in a male fetus.", "sources": ["LABEL"] },
+    { "id": "thalidomide", "level": "contraindicated", "names": ["thalidomide", "lenalidomide", "pomalidomide"],
+      "label": "Thalidomide and analogues", "reason": "Severe birth defects.", "sources": ["LABEL"] },
+    { "id": "androgens", "level": "contraindicated", "names": ["danazol", "testosterone"],
+      "label": "Androgen", "reason": "Virilisation of a female fetus.", "sources": ["LABEL"] },
+    { "id": "anthelmintics_first_trimester", "level": "avoid", "max_weeks": 13, "names": ["albendazole", "mebendazole"],
+      "label": "Albendazole / mebendazole in the first trimester", "reason": "Deworming in pregnancy is recommended only after the first trimester.", "sources": ["WHO-DEWORM-2017", "LABEL"] }
+  ]
+};
+var module = { exports: {} };
+(function (module) {
+'use strict';
+/**
+ * maternal-danger-signs
+ *
+ * A small, dependency-free screen for danger signs in pregnancy and after
+ * delivery, and for medicines that are unsafe in pregnancy. It is meant for
+ * community health workers, nurses and doctors in primary care.
+ *
+ * Design rules:
+ *  - Deterministic. The same input always gives the same output; no AI model,
+ *    no network call. Every rule is plain JSON in ../data with its source.
+ *  - Tuned to over-trigger. A false alarm costs a visit; a missed eclampsia or
+ *    ectopic pregnancy can cost a life. Unknown gestational age therefore
+ *    satisfies week limits rather than suppressing an alert.
+ *  - Decision support only. It never says "normal" or "safe"; an empty result
+ *    means "no listed danger sign was found in what was entered".
+ */
+
+const DANGER = window.__DANGER;
+const MEDS = window.__MEDS;
+
+const LEVEL_RANK = { emergency: 3, same_day: 2, routine: 1, none: 0 };
+const SYMPTOMS = [
+  'convulsions', 'vaginal_bleeding', 'heavy_bleeding', 'missed_period', 'severe_abdominal_pain',
+  'lower_abdominal_pain', 'shoulder_tip_pain', 'fainting', 'severe_headache', 'blurred_vision',
+  'epigastric_pain', 'fast_or_difficult_breathing', 'chest_pain', 'fever', 'too_weak_to_get_up',
+  'foul_discharge', 'leaking_fluid', 'reduced_fetal_movements', 'swelling_face_hands',
+  'calf_pain_swelling', 'severe_vomiting', 'burning_urination', 'flank_pain', 'thoughts_of_self_harm',
+];
+
+const DISCLAIMER = 'Decision support only. This screen lists danger signs from national and WHO guidance; '
+  + 'it does not diagnose, and an empty result does not mean the woman is well. Use clinical judgement.';
+
+function num(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Normalise the caller's observation object. Accepts "bp": "150/100" as a shortcut. */
+function normalise(obs = {}) {
+  const vitals = { ...(obs.vitals || {}) };
+  if (obs.bp || vitals.bp) {
+    const m = String(obs.bp || vitals.bp).match(/(\d{2,3})\s*\/\s*(\d{2,3})/);
+    if (m) { vitals.systolic = vitals.systolic ?? Number(m[1]); vitals.diastolic = vitals.diastolic ?? Number(m[2]); }
+  }
+  const symptoms = new Set((obs.symptoms || []).map((s) => String(s).trim().toLowerCase()));
+  return {
+    stage: obs.stage ? String(obs.stage).toLowerCase() : 'unknown',
+    weeks: num(obs.gestational_weeks),
+    daysPostpartum: num(obs.days_postpartum),
+    symptoms,
+    vitals: {
+      systolic: num(vitals.systolic),
+      diastolic: num(vitals.diastolic),
+      temperature_c: num(vitals.temperature_c),
+      respiratory_rate: num(vitals.respiratory_rate),
+      haemoglobin_g_dl: num(vitals.haemoglobin_g_dl),
+    },
+  };
+}
+
+function vitalTest(key, value, v) {
+  // key looks like "systolic_gte" or "haemoglobin_g_dl_lt"
+  const m = key.match(/^(.*)_(gte|lt)$/);
+  if (!m) throw new Error(`Unknown vital test ${key}`);
+  const actual = v[m[1]];
+  if (actual === null || actual === undefined) return false;
+  return m[2] === 'gte' ? actual >= value : actual < value;
+}
+
+/** Evaluate one rule condition. Unknown stage matches nothing except stage-free rules. */
+function matches(when, o) {
+  if (when.stage && !when.stage.includes(o.stage)) return false;
+  if (when.min_weeks !== undefined && o.weeks !== null && o.weeks < when.min_weeks) return false;
+  if (when.max_weeks !== undefined && o.weeks !== null && o.weeks > when.max_weeks) return false;
+  if (when.max_days_postpartum !== undefined && o.daysPostpartum !== null && o.daysPostpartum > when.max_days_postpartum) return false;
+  if (when.symptoms_any && !when.symptoms_any.some((s) => o.symptoms.has(s))) return false;
+  if (when.symptoms_all && !when.symptoms_all.every((s) => o.symptoms.has(s))) return false;
+  if (when.vitals_any && !Object.entries(when.vitals_any).some(([k, val]) => vitalTest(k, val, o.vitals))) return false;
+  if (when.vitals_all && !Object.entries(when.vitals_all).every(([k, val]) => vitalTest(k, val, o.vitals))) return false;
+  if (when.any_of && !when.any_of.some((sub) => matches(sub, o))) return false;
+  if (when.all_of && !when.all_of.every((sub) => matches(sub, o))) return false;
+  return true;
+}
+
+function sourceList(ids, table) {
+  return ids.map((id) => ({ id, text: table[id] || id }));
+}
+
+/**
+ * Screen structured observations.
+ * @param {object} obs { stage: 'pregnant'|'postpartum', gestational_weeks, days_postpartum,
+ *                       symptoms: [codes], vitals: { systolic, diastolic, temperature_c,
+ *                       respiratory_rate, haemoglobin_g_dl }, bp: '150/100', medicines: [names] }
+ * @returns {{ level, alerts, medicine_alerts, disclaimer, version }}
+ */
+function screen(obs = {}) {
+  const o = normalise(obs);
+  const unknown = [...o.symptoms].filter((s) => !SYMPTOMS.includes(s));
+  const alerts = DANGER.rules.filter((r) => matches(r.when, o)).map((r) => ({
+    id: r.id,
+    level: r.level,
+    label: r.label,
+    label_hi: r.label_hi,
+    action: r.action,
+    action_hi: r.action_hi,
+    sources: sourceList(r.sources, DANGER.sources),
+  }));
+  // Keep the strongest message when a specific rule and a general rule overlap.
+  const suppressed = new Set();
+  const ids = new Set(alerts.map((a) => a.id));
+  if (ids.has('preeclampsia_with_symptoms') || ids.has('severe_hypertension')) suppressed.add('hypertension_after_20_weeks');
+  if (ids.has('possible_ectopic')) suppressed.add('early_pregnancy_pain');
+  if (ids.has('fever_too_weak') || ids.has('postpartum_sepsis') || ids.has('urinary_infection_with_fever')) suppressed.add('fever');
+  if (ids.has('postpartum_sepsis')) suppressed.add('foul_discharge');
+  if (ids.has('postpartum_haemorrhage')) suppressed.add('postpartum_bleeding_check');
+  const kept = alerts.filter((a) => !suppressed.has(a.id)).sort((a, b) => LEVEL_RANK[b.level] - LEVEL_RANK[a.level]);
+
+  const medicine_alerts = obs.medicines ? checkMedicines(obs.medicines, obs) : [];
+  const level = kept.reduce((best, a) => (LEVEL_RANK[a.level] > LEVEL_RANK[best] ? a.level : best), 'none');
+  return {
+    level,
+    alerts: kept,
+    medicine_alerts,
+    unknown_symptoms: unknown,
+    emergency_numbers: level === 'emergency' ? { ambulance: '108', maternal_transport: '102' } : undefined,
+    disclaimer: DISCLAIMER,
+    version: DANGER.version,
+  };
+}
+
+/**
+ * Flag medicines that are unsafe in pregnancy.
+ * @param {string[]} medicines free-text medicine names (generic names; strength and form are ignored)
+ * @param {object} ctx { stage: 'pregnant' (default), gestational_weeks }
+ */
+function checkMedicines(medicines = [], ctx = {}) {
+  const stage = ctx.stage ? String(ctx.stage).toLowerCase() : 'pregnant';
+  if (stage !== 'pregnant') return [];
+  const weeks = num(ctx.gestational_weeks);
+  const out = [];
+  for (const raw of medicines) {
+    const name = String(raw).toLowerCase().replace(/[^a-z\s-]/g, ' ').replace(/\s+/g, ' ').trim();
+    if (!name) continue;
+    for (const g of MEDS.groups) {
+      if (g.stage && !g.stage.includes(stage)) continue;
+      if (g.min_weeks !== undefined && weeks !== null && weeks < g.min_weeks) continue;
+      if (g.max_weeks !== undefined && weeks !== null && weeks > g.max_weeks) continue;
+      const hit = g.names.find((n) => new RegExp(`(^|\\s)${n.replace(/[-\s]/g, '[-\\s]?')}(\\s|$)`).test(name));
+      if (hit) {
+        out.push({ medicine: String(raw), matched: hit, group: g.id, level: g.level, label: g.label, reason: g.reason,
+          sources: sourceList(g.sources, MEDS.sources) });
+        break;
+      }
+    }
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
+// Free-text screen (English, Hindi in Devanagari, and romanised Hindi).
+// Keyword matching, deliberately broad. It does not understand negation:
+// "no bleeding" still matches "bleeding". That is the safe direction.
+// ---------------------------------------------------------------------------
+const STAGE_WORDS = {
+  postpartum: ['after delivery', 'delivered', 'postpartum', 'post partum', 'gave birth', 'prasav ke baad', 'delivery ke baad',
+    'प्रसव के बाद', 'डिलीवरी के बाद', 'जचगी के बाद'],
+  pregnant: ['pregnant', 'pregnancy', 'expecting', 'weeks pregnant', 'months pregnant', 'garbh', 'garbhvati',
+    'गर्भ', 'गर्भवती', 'गर्भावस्था'],
+};
+const SYMPTOM_WORDS = {
+  convulsions: [' fits', ' fit ', 'seizure', 'convulsion', 'daura', 'jhatke', 'दौरा', 'दौरे', 'झटके'],
+  vaginal_bleeding: ['bleeding', 'bleed', 'spotting', 'khoon aa', 'khun aa', 'खून आ', 'खून जा', 'रक्तस्राव'],
+  heavy_bleeding: ['heavy bleeding', 'bleeding a lot', 'bahut khoon', 'bahut khun', 'बहुत खून', 'ज़्यादा खून', 'ज्यादा खून'],
+  missed_period: ['missed period', 'period late', 'period nahi', 'mahwari nahi', 'masik nahi', 'माहवारी नहीं', 'पीरियड नहीं', 'मासिक नहीं'],
+  severe_abdominal_pain: ['severe abdominal pain', 'severe stomach pain', 'severe pain in abdomen', 'severe pain in stomach',
+    'pet me tez dard', 'pet mein tez dard', 'पेट में तेज दर्द', 'पेट में बहुत दर्द'],
+  lower_abdominal_pain: ['lower abdominal pain', 'pain in lower abdomen', 'lower stomach pain', 'neeche pet', 'niche pet',
+    'पेट के निचले', 'नीचे पेट'],
+  shoulder_tip_pain: ['shoulder tip pain', 'pain in the shoulder tip'],
+  fainting: ['fainted', 'fainting', 'faint', 'passed out', 'behosh', 'बेहोश'],
+  severe_headache: ['severe headache', 'bad headache', 'terrible headache', 'tez sir dard', 'sir me tez dard', 'sir mein tez dard',
+    'तेज सिरदर्द', 'सिर में तेज दर्द', 'बहुत सिरदर्द'],
+  blurred_vision: ['blurred vision', 'blurry vision', 'cannot see clearly', 'dhundhla', 'धुंधला'],
+  epigastric_pain: ['upper abdominal pain', 'upper stomach pain', 'epigastric', 'pet ke upar dard', 'पेट के ऊपर'],
+  fast_or_difficult_breathing: ['breathless', 'difficulty breathing', 'difficult breathing', 'short of breath', 'cannot breathe',
+    'saans phool', 'saans lene me', 'सांस फूल', 'साँस फूल', 'सांस लेने में'],
+  chest_pain: ['chest pain', 'pain in chest', 'seene me dard', 'seene mein dard', 'सीने में दर्द', 'छाती में दर्द'],
+  fever: ['fever', 'high temperature', 'bukhar', 'bukhaar', 'बुखार'],
+  too_weak_to_get_up: ['too weak', 'cannot get up', "can't get up", 'cannot get out of bed', 'bahut kamzori', 'uth nahi', 'बहुत कमजोरी', 'उठ नहीं'],
+  foul_discharge: ['foul smelling discharge', 'foul-smelling discharge', 'smelly discharge', 'bad smell', 'badbudar', 'बदबूदार', 'बदबू'],
+  leaking_fluid: ['water broke', 'waters broke', 'leaking water', 'leaking fluid', 'pani gir', 'paani gir', 'pani aa raha', 'पानी गिर', 'पानी आ रहा', 'पानी रिस'],
+  reduced_fetal_movements: ['baby not moving', 'baby is not moving', 'reduced movement', 'less movement', 'baby moving less', 'moving less',
+    'not moving as much', 'fewer kicks', 'not kicking', 'no kicks',
+    'bachcha hil nahi', 'baccha hil nahi', 'halchal kam', 'बच्चा हिल नहीं', 'हलचल कम', 'हलचल नहीं'],
+  swelling_face_hands: ['swelling of face', 'swollen face', 'face swelling', 'puffy face', 'swelling of hands', 'swollen hands',
+    'chehre pe sujan', 'chehre par sujan', 'चेहरे पर सूजन', 'हाथों में सूजन'],
+  calf_pain_swelling: ['calf pain', 'one leg swollen', 'swollen calf', 'pindli me dard', 'pindli mein dard', 'पिंडली में दर्द', 'पिंडली में सूजन'],
+  severe_vomiting: ['vomiting everything', 'cannot keep anything down', "can't keep anything down", 'bahut ulti', 'बहुत उल्टी', 'लगातार उल्टी'],
+  burning_urination: ['burning urine', 'burning urination', 'burning while passing urine', 'peshab me jalan', 'peshab mein jalan', 'पेशाब में जलन'],
+  flank_pain: ['flank pain', 'pain in the side of the back'],
+  thoughts_of_self_harm: ['kill myself', 'end my life', 'harm myself', 'hurt myself', 'harm my baby', 'hurt the baby', 'want to die',
+    'marna chahti', 'mar jaana chahti', 'मरना चाहती', 'खुद को नुकसान', 'जान दे'],
+};
+
+function screenText(text = '', extra = {}) {
+  const t = ` ${String(text).toLowerCase().replace(/\s+/g, ' ')} `;
+  const has = (w) => t.includes(w.toLowerCase());
+  let stage = extra.stage || 'unknown';
+  if (stage === 'unknown') {
+    if (STAGE_WORDS.postpartum.some(has)) stage = 'postpartum';
+    else if (STAGE_WORDS.pregnant.some(has)) stage = 'pregnant';
+  }
+  const symptoms = Object.entries(SYMPTOM_WORDS).filter(([, words]) => words.some(has)).map(([code]) => code);
+  const result = screen({ ...extra, stage, symptoms });
+  return { ...result, stage, symptoms_found: symptoms };
+}
+
+module.exports = { screen, screenText, checkMedicines, SYMPTOMS, DISCLAIMER, rules: DANGER, medicines: MEDS };
+
+})(module);
+const MDS = module.exports;
+const LABELS = {
+  convulsions:['Convulsions / fits','दौरे / झटके'], vaginal_bleeding:['Bleeding from the vagina','योनि से खून'], heavy_bleeding:['Heavy bleeding','बहुत ज़्यादा खून'],
+  missed_period:['Missed period','माहवारी रुकी'], severe_abdominal_pain:['Severe abdominal pain','पेट में तेज दर्द'], lower_abdominal_pain:['Lower abdominal pain','पेट के निचले हिस्से में दर्द'],
+  shoulder_tip_pain:['Shoulder-tip pain','कंधे के सिरे में दर्द'], fainting:['Fainting','बेहोशी'], severe_headache:['Severe headache','तेज सिरदर्द'], blurred_vision:['Blurred vision','धुंधला दिखना'],
+  epigastric_pain:['Upper-abdominal pain','पेट के ऊपरी हिस्से में दर्द'], fast_or_difficult_breathing:['Fast or difficult breathing','तेज़ या कठिन सांस'], chest_pain:['Chest pain','सीने में दर्द'],
+  fever:['Fever','बुखार'], too_weak_to_get_up:['Too weak to get up','उठने में भी कमज़ोरी'], foul_discharge:['Foul-smelling discharge','बदबूदार स्राव'], leaking_fluid:['Leaking watery fluid','पानी जैसा रिसाव'],
+  reduced_fetal_movements:['Baby moving less','बच्चे की हलचल कम'], swelling_face_hands:['Swelling of face or hands','चेहरे या हाथों में सूजन'], calf_pain_swelling:['Pain or swelling in one calf','एक पिंडली में दर्द/सूजन'],
+  severe_vomiting:['Cannot keep fluids down','पानी भी नहीं रुकता (उल्टी)'], burning_urination:['Burning urination','पेशाब में जलन'], flank_pain:['Pain in the side of the back','कमर के बगल में दर्द'],
+  thoughts_of_self_harm:['Thoughts of harming herself or the baby','खुद को या बच्चे को नुकसान के विचार']
+};
+const LV = { emergency:['Emergency: refer now (108 / 102)','आपातकाल: तुरंत रेफर करें (108 / 102)'], same_day:['Same day: needs assessment today','आज ही जांच ज़रूरी'], routine:['Act at this visit','इसी विज़िट में कदम उठाएँ'], none:['No listed danger sign in what was entered','दर्ज जानकारी में कोई सूचीबद्ध खतरे का संकेत नहीं मिला'] };
+let lang = 0, mode = 'form', last = null;
+const $ = (id) => document.getElementById(id);
+$('sym').innerHTML = MDS.SYMPTOMS.map((s) => `<label><input type="checkbox" value="${s}"><span>${LABELS[s][0]}<small>${LABELS[s][1]}</small></span></label>`).join('');
+$('stage').onchange = () => { $('wlab').textContent = $('stage').value === 'pregnant' ? 'Weeks of pregnancy' : 'Days since delivery'; };
+$('t-form').onclick = () => { mode = 'form'; $('t-form').classList.add('on'); $('t-text').classList.remove('on'); $('p-form').style.display = ''; $('p-text').style.display = 'none'; };
+$('t-text').onclick = () => { mode = 'text'; $('t-text').classList.add('on'); $('t-form').classList.remove('on'); $('p-text').style.display = ''; $('p-form').style.display = 'none'; };
+$('l-en').onclick = () => { lang = 0; $('l-en').classList.add('on'); $('l-hi').classList.remove('on'); render(); };
+$('l-hi').onclick = () => { lang = 1; $('l-hi').classList.add('on'); $('l-en').classList.remove('on'); render(); };
+const v = (id) => ($(id).value === '' ? undefined : Number($(id).value));
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+$('go').onclick = () => {
+  if (mode === 'form') {
+    const stage = $('stage').value;
+    const obs = { stage, symptoms: [...document.querySelectorAll('#sym input:checked')].map((i) => i.value),
+      vitals: { systolic: v('sys'), diastolic: v('dia'), haemoglobin_g_dl: v('hb'), temperature_c: v('temp'), respiratory_rate: v('rr') },
+      medicines: $('meds').value.split(',').map((s) => s.trim()).filter(Boolean) };
+    if (stage === 'pregnant') obs.gestational_weeks = v('weeks'); else obs.days_postpartum = v('weeks');
+    last = MDS.screen(obs);
+  } else {
+    last = MDS.screenText($('free').value, { bp: $('fbp').value || undefined, gestational_weeks: v('fweeks') });
+  }
+  render();
+};
+function render() {
+  if (!last) return;
+  const r = last; let h = `<div class="lvl ${r.level}">${LV[r.level][lang]}</div>`;
+  if (r.stage) h += `<p style="font-size:13px;color:#5b6475">Read as: ${r.stage === 'unknown' ? 'stage not stated (pregnancy rules need it)' : r.stage}${r.symptoms_found && r.symptoms_found.length ? ' · found: ' + r.symptoms_found.map((s) => LABELS[s][lang]).join(', ') : ''}</p>`;
+  for (const a of r.alerts) h += `<div class="alert"><span class="pill ${a.level}">${a.level.replace('_', ' ')}</span><b>${esc(lang ? a.label_hi : a.label)}</b><div class="act">${esc(lang ? a.action_hi : a.action)}</div><div class="src">Source: ${a.sources.map((s) => esc(s.id)).join(', ')}</div></div>`;
+  for (const m of r.medicine_alerts) h += `<div class="alert"><span class="pill ${m.level === 'contraindicated' ? 'emergency' : 'same_day'}">${m.level}</span><b>${esc(m.medicine)}: ${esc(m.label)}</b><div class="act">${esc(m.reason)}</div><div class="src">Source: ${m.sources.map((s) => esc(s.id)).join(', ')}</div></div>`;
+  h += `<p class="disc">${esc(r.disclaimer)}</p>`;
+  $('out').innerHTML = h;
+}
+</script></body></html>

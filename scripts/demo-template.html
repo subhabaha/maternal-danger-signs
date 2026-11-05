@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>maternal-danger-signs · demo</title>
+<style>
+:root{--ink:#14213d;--muted:#5b6475;--line:#d9dee7;--bg:#f6f8fb;--em:#b42318;--emb:#fef3f2;--sd:#b54708;--sdb:#fffaeb;--rt:#175cd3;--rtb:#eff8ff}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Devanagari",Arial,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px 20px}header h1{margin:0;font-size:20px}header p{margin:4px 0 0;color:var(--muted);font-size:14px}
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;padding:18px 20px;max-width:1200px;margin:0 auto}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+h2{font-size:15px;margin:0 0 10px}label{font-size:13px;color:var(--muted);display:block;margin-bottom:3px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.row>div{flex:1;min-width:110px}
+input[type=number],input[type=text],select,textarea{width:100%;padding:8px 9px;border:1px solid var(--line);border-radius:8px;font:inherit;font-size:14px}
+textarea{min-height:70px}.sym{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:13.5px}.sym label{color:var(--ink);display:flex;gap:6px;align-items:flex-start;margin:0}
+.sym small{color:var(--muted);display:block}.tabs{display:flex;gap:6px;margin-bottom:12px}.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.go{background:var(--ink);color:#fff;border:0;border-radius:8px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;margin-top:6px}
+.lvl{border-radius:10px;padding:12px 14px;font-weight:700;margin-bottom:10px}.emergency{background:var(--emb);color:var(--em);border:1px solid #fecdca}.same_day{background:var(--sdb);color:var(--sd);border:1px solid #fedf89}.routine{background:var(--rtb);color:var(--rt);border:1px solid #b2ddff}.none{background:#f2f4f7;color:var(--muted);border:1px solid var(--line)}
+.alert{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px}.alert b{display:block}.alert .act{margin:4px 0}.alert .src{font-size:12px;color:var(--muted)}
+.pill{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:2px 7px;border-radius:999px;margin-right:6px}
+.disc{font-size:12.5px;color:var(--muted);margin-top:12px}footer{text-align:center;color:var(--muted);font-size:12.5px;padding:10px 20px 24px}a{color:#175cd3}
+</style></head><body>
+<header><h1>maternal-danger-signs <span style="font-weight:400;color:#5b6475">· demo</span></h1>
+<p>Danger signs in pregnancy and after delivery, and medicines unsafe in pregnancy. English and Hindi. Runs entirely in your browser; nothing is sent anywhere. <b>Decision support only.</b></p></header>
+<main>
+<section class="card">
+  <div class="tabs"><button id="t-form" class="on" type="button">Checklist</button><button id="t-text" type="button">Free text (English / हिंदी)</button></div>
+  <div id="p-form">
+    <div class="row"><div><label>Stage</label><select id="stage"><option value="pregnant">Pregnant · गर्भवती</option><option value="postpartum">After delivery · प्रसव के बाद</option></select></div>
+      <div><label id="wlab">Weeks of pregnancy</label><input id="weeks" type="number" min="0" max="45" placeholder="e.g. 32"></div></div>
+    <div class="row"><div><label>BP systolic</label><input id="sys" type="number" placeholder="e.g. 150"></div><div><label>BP diastolic</label><input id="dia" type="number" placeholder="e.g. 100"></div>
+      <div><label>Haemoglobin g/dL</label><input id="hb" type="number" step="0.1" placeholder="e.g. 9.1"></div></div>
+    <div class="row"><div><label>Temperature °C</label><input id="temp" type="number" step="0.1" placeholder="e.g. 37.0"></div><div><label>Breaths per minute</label><input id="rr" type="number" placeholder="e.g. 18"></div></div>
+    <h2>Symptoms · लक्षण</h2><div class="sym" id="sym"></div>
+    <div class="row" style="margin-top:12px"><div><label>Medicines (comma-separated, generic names)</label><input id="meds" type="text" placeholder="e.g. telmisartan 40 mg, ibuprofen 400 mg"></div></div>
+  </div>
+  <div id="p-text" style="display:none">
+    <label>What does the woman report? (English, Hindi, or Hindi in English letters)</label>
+    <textarea id="free">Main 8 mahine ki garbhvati hoon, tez sir dard aur sab dhundhla dikh raha hai</textarea>
+    <div class="row" style="margin-top:8px"><div><label>BP (optional)</label><input id="fbp" type="text" placeholder="e.g. 156/104"></div><div><label>Weeks (optional)</label><input id="fweeks" type="number"></div></div>
+  </div>
+  <button class="go" id="go" type="button">Check</button>
+</section>
+<section class="card"><div class="tabs"><button id="l-en" class="on" type="button">English</button><button id="l-hi" type="button">हिंदी</button></div><div id="out"><p style="color:#5b6475">Fill in the checklist or type what the woman says, then press <b>Check</b>.</p></div></section>
+</main>
+<footer>Open source (Apache-2.0) · <a href="https://github.com/subhabaha/maternal-danger-signs">github.com/subhabaha/maternal-danger-signs</a> · by InstaDataHelp AI Services Pvt. Ltd., Jaipur · version __VERSION__</footer>
+<script>
+window.__DANGER = __DANGER__;
+window.__MEDS = __MEDS__;
+var module = { exports: {} };
+(function (module) {
+__SRC__
+})(module);
+const MDS = module.exports;
+const LABELS = {
+  convulsions:['Convulsions / fits','दौरे / झटके'], vaginal_bleeding:['Bleeding from the vagina','योनि से खून'], heavy_bleeding:['Heavy bleeding','बहुत ज़्यादा खून'],
+  missed_period:['Missed period','माहवारी रुकी'], severe_abdominal_pain:['Severe abdominal pain','पेट में तेज दर्द'], lower_abdominal_pain:['Lower abdominal pain','पेट के निचले हिस्से में दर्द'],
+  shoulder_tip_pain:['Shoulder-tip pain','कंधे के सिरे में दर्द'], fainting:['Fainting','बेहोशी'], severe_headache:['Severe headache','तेज सिरदर्द'], blurred_vision:['Blurred vision','धुंधला दिखना'],
+  epigastric_pain:['Upper-abdominal pain','पेट के ऊपरी हिस्से में दर्द'], fast_or_difficult_breathing:['Fast or difficult breathing','तेज़ या कठिन सांस'], chest_pain:['Chest pain','सीने में दर्द'],
+  fever:['Fever','बुखार'], too_weak_to_get_up:['Too weak to get up','उठने में भी कमज़ोरी'], foul_discharge:['Foul-smelling discharge','बदबूदार स्राव'], leaking_fluid:['Leaking watery fluid','पानी जैसा रिसाव'],
+  reduced_fetal_movements:['Baby moving less','बच्चे की हलचल कम'], swelling_face_hands:['Swelling of face or hands','चेहरे या हाथों में सूजन'], calf_pain_swelling:['Pain or swelling in one calf','एक पिंडली में दर्द/सूजन'],
+  severe_vomiting:['Cannot keep fluids down','पानी भी नहीं रुकता (उल्टी)'], burning_urination:['Burning urination','पेशाब में जलन'], flank_pain:['Pain in the side of the back','कमर के बगल में दर्द'],
+  thoughts_of_self_harm:['Thoughts of harming herself or the baby','खुद को या बच्चे को नुकसान के विचार']
+};
+const LV = { emergency:['Emergency: refer now (108 / 102)','आपातकाल: तुरंत रेफर करें (108 / 102)'], same_day:['Same day: needs assessment today','आज ही जांच ज़रूरी'], routine:['Act at this visit','इसी विज़िट में कदम उठाएँ'], none:['No listed danger sign in what was entered','दर्ज जानकारी में कोई सूचीबद्ध खतरे का संकेत नहीं मिला'] };
+let lang = 0, mode = 'form', last = null;
+const $ = (id) => document.getElementById(id);
+$('sym').innerHTML = MDS.SYMPTOMS.map((s) => `<label><input type="checkbox" value="${s}"><span>${LABELS[s][0]}<small>${LABELS[s][1]}</small></span></label>`).join('');
+$('stage').onchange = () => { $('wlab').textContent = $('stage').value === 'pregnant' ? 'Weeks of pregnancy' : 'Days since delivery'; };
+$('t-form').onclick = () => { mode = 'form'; $('t-form').classList.add('on'); $('t-text').classList.remove('on'); $('p-form').style.display = ''; $('p-text').style.display = 'none'; };
+$('t-text').onclick = () => { mode = 'text'; $('t-text').classList.add('on'); $('t-form').classList.remove('on'); $('p-text').style.display = ''; $('p-form').style.display = 'none'; };
+$('l-en').onclick = () => { lang = 0; $('l-en').classList.add('on'); $('l-hi').classList.remove('on'); render(); };
+$('l-hi').onclick = () => { lang = 1; $('l-hi').classList.add('on'); $('l-en').classList.remove('on'); render(); };
+const v = (id) => ($(id).value === '' ? undefined : Number($(id).value));
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+$('go').onclick = () => {
+  if (mode === 'form') {
+    const stage = $('stage').value;
+    const obs = { stage, symptoms: [...document.querySelectorAll('#sym input:checked')].map((i) => i.value),
+      vitals: { systolic: v('sys'), diastolic: v('dia'), haemoglobin_g_dl: v('hb'), temperature_c: v('temp'), respiratory_rate: v('rr') },
+      medicines: $('meds').value.split(',').map((s) => s.trim()).filter(Boolean) };
+    if (stage === 'pregnant') obs.gestational_weeks = v('weeks'); else obs.days_postpartum = v('weeks');
+    last = MDS.screen(obs);
+  } else {
+    last = MDS.screenText($('free').value, { bp: $('fbp').value || undefined, gestational_weeks: v('fweeks') });
+  }
+  render();
+};
+function render() {
+  if (!last) return;
+  const r = last; let h = `<div class="lvl ${r.level}">${LV[r.level][lang]}</div>`;
+  if (r.stage) h += `<p style="font-size:13px;color:#5b6475">Read as: ${r.stage === 'unknown' ? 'stage not stated (pregnancy rules need it)' : r.stage}${r.symptoms_found && r.symptoms_found.length ? ' · found: ' + r.symptoms_found.map((s) => LABELS[s][lang]).join(', ') : ''}</p>`;
+  for (const a of r.alerts) h += `<div class="alert"><span class="pill ${a.level}">${a.level.replace('_', ' ')}</span><b>${esc(lang ? a.label_hi : a.label)}</b><div class="act">${esc(lang ? a.action_hi : a.action)}</div><div class="src">Source: ${a.sources.map((s) => esc(s.id)).join(', ')}</div></div>`;
+  for (const m of r.medicine_alerts) h += `<div class="alert"><span class="pill ${m.level === 'contraindicated' ? 'emergency' : 'same_day'}">${m.level}</span><b>${esc(m.medicine)}: ${esc(m.label)}</b><div class="act">${esc(m.reason)}</div><div class="src">Source: ${m.sources.map((s) => esc(s.id)).join(', ')}</div></div>`;
+  h += `<p class="disc">${esc(r.disclaimer)}</p>`;
+  $('out').innerHTML = h;
+}
+</script></body></html>
